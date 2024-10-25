@@ -306,7 +306,7 @@ bool payload_is_known(payload_type_t type, uint8_t maj_ver)
 			{
 				return TRUE;
 			}
-			if (type == PLV2_FRAGMENT)
+			if (type == PLV2_FRAGMENT || type == PLV2_QKD)
 			{
 				return TRUE;
 			}

@@ -144,7 +144,7 @@ static payload_order_t ike_sa_init_i_order[] = {
 	{PLV2_NOTIFY,					NAT_DETECTION_SOURCE_IP},
 	{PLV2_NOTIFY,					NAT_DETECTION_DESTINATION_IP},
 	{PLV2_NOTIFY,					0},
-	{PLV2_NOTIFY,					0},
+	{PLV2_QKD,					0},
 	{PLV2_VENDOR_ID,				0},
 };
 
