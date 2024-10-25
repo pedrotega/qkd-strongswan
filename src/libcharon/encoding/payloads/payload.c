@@ -40,6 +40,7 @@
 #include <encoding/payloads/hash_payload.h>
 #include <encoding/payloads/fragment_payload.h>
 #include <encoding/payloads/unknown_payload.h>
+#include <encoding/payloads/qkd_payload.h>
 
 ENUM_BEGIN(payload_type_names, PL_NONE, PL_NONE,
 	"PL_NONE");
@@ -61,7 +62,7 @@ ENUM_NEXT(payload_type_names, PLV1_SECURITY_ASSOCIATION, PLV1_CONFIGURATION, PL_
 ENUM_NEXT(payload_type_names, PLV1_NAT_D, PLV1_NAT_OA, PLV1_CONFIGURATION,
 	"NAT_D_V1",
 	"NAT_OA_V1");
-ENUM_NEXT(payload_type_names, PLV2_SECURITY_ASSOCIATION, PLV2_FRAGMENT, PLV1_NAT_OA,
+ENUM_NEXT(payload_type_names, PLV2_SECURITY_ASSOCIATION, PLV2_QKD, PLV1_NAT_OA,
 	"SECURITY_ASSOCIATION",
 	"KEY_EXCHANGE",
 	"ID_INITIATOR",
@@ -82,7 +83,8 @@ ENUM_NEXT(payload_type_names, PLV2_SECURITY_ASSOCIATION, PLV2_FRAGMENT, PLV1_NAT
 	"GROUP_ID",
 	"GROUP_SECURITY_ASSOCIATION",
 	"KEY_DOWNLOAD",
-	"ENCRYPTED_FRAGMENT");
+	"ENCRYPTED_FRAGMENT",
+	"QKD");
 #ifdef ME
 ENUM_NEXT(payload_type_names, PLV2_ID_PEER, PLV2_ID_PEER, PLV2_FRAGMENT,
 	"ID_PEER");
@@ -91,7 +93,7 @@ ENUM_NEXT(payload_type_names, PLV1_NAT_D_DRAFT_00_03, PLV1_FRAGMENT, PLV2_ID_PEE
 	"NAT_OA_DRAFT_V1",
 	"FRAGMENT");
 #else
-ENUM_NEXT(payload_type_names, PLV1_NAT_D_DRAFT_00_03, PLV1_FRAGMENT, PLV2_FRAGMENT,
+ENUM_NEXT(payload_type_names, PLV1_NAT_D_DRAFT_00_03, PLV1_FRAGMENT, PLV2_QKD,
 	"NAT_D_DRAFT_V1",
 	"NAT_OA_DRAFT_V1",
 	"FRAGMENT");
@@ -132,7 +134,7 @@ ENUM_NEXT(payload_type_short_names, PLV1_SECURITY_ASSOCIATION, PLV1_CONFIGURATIO
 ENUM_NEXT(payload_type_short_names, PLV1_NAT_D, PLV1_NAT_OA, PLV1_CONFIGURATION,
 	"NAT-D",
 	"NAT-OA");
-ENUM_NEXT(payload_type_short_names, PLV2_SECURITY_ASSOCIATION, PLV2_FRAGMENT, PLV1_NAT_OA,
+ENUM_NEXT(payload_type_short_names, PLV2_SECURITY_ASSOCIATION, PLV2_QKD, PLV1_NAT_OA,
 	"SA",
 	"KE",
 	"IDi",
@@ -153,7 +155,8 @@ ENUM_NEXT(payload_type_short_names, PLV2_SECURITY_ASSOCIATION, PLV2_FRAGMENT, PL
 	"IDg",
 	"GSA",
 	"KD",
-	"EF");
+	"EF",
+	"QKD");
 #ifdef ME
 ENUM_NEXT(payload_type_short_names, PLV2_ID_PEER, PLV2_ID_PEER, PLV2_FRAGMENT,
 	"IDp");
@@ -162,7 +165,7 @@ ENUM_NEXT(payload_type_short_names, PLV1_NAT_D_DRAFT_00_03, PLV1_FRAGMENT, PLV2_
 	"NAT-OA",
 	"FRAG");
 #else
-ENUM_NEXT(payload_type_short_names, PLV1_NAT_D_DRAFT_00_03, PLV1_FRAGMENT, PLV2_FRAGMENT,
+ENUM_NEXT(payload_type_short_names, PLV1_NAT_D_DRAFT_00_03, PLV1_FRAGMENT, PLV2_QKD,
 	"NAT-D",
 	"NAT-OA",
 	"FRAG");
@@ -261,6 +264,8 @@ payload_t *payload_create(payload_type_t type)
 			return (payload_t*)fragment_payload_create();
 		case PLV2_FRAGMENT:
 			return (payload_t*)encrypted_fragment_payload_create();
+		case PLV2_QKD:
+			return (payload_t*)qkd_payload_create(type);
 		default:
 			return (payload_t*)unknown_payload_create(type);
 	}

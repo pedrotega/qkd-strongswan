@@ -29,6 +29,7 @@
 #include <encoding/payloads/sa_payload.h>
 #include <encoding/payloads/ke_payload.h>
 #include <encoding/payloads/nonce_payload.h>
+#include <encoding/payloads/qkd_payload.h>
 
 /** maximum retries to do with cookies/other dh groups */
 #define MAX_RETRIES 5
@@ -94,6 +95,11 @@ struct private_ike_init_t {
 	 * nonce chosen by peer
 	 */
 	chunk_t other_nonce;
+
+	/**
+	 * QKD key id
+	 */
+	chunk_t qkd_key_id;
 
 	/**
 	 * nonce generator
@@ -320,6 +326,7 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 	sa_payload_t *sa_payload;
 	ke_payload_t *ke_payload;
 	nonce_payload_t *nonce_payload;
+	qkd_payload_t *qkd_payload;
 	linked_list_t *proposal_list, *other_dh_groups;
 	ike_sa_id_t *id;
 	proposal_t *proposal;
@@ -362,6 +369,12 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 
 		sa_payload = sa_payload_create_from_proposals_v2(proposal_list);
 		proposal_list->destroy_offset(proposal_list, offsetof(proposal_t, destroy));
+
+		char *id_qkd = "73a58f2e37d1410ca2ae191911bee564";
+		this->qkd_key_id = chunk_create(id_qkd, strlen(id_qkd));
+		qkd_payload = qkd_payload_create(PLV2_QKD);
+		qkd_payload->set_data(qkd_payload,this->qkd_key_id);
+		message->add_payload(message, (payload_t*)qkd_payload);
 	}
 	else
 	{
@@ -555,6 +568,11 @@ static void process_payloads(private_ike_init_t *this, message_t *message)
 				nonce_payload_t *nonce_payload = (nonce_payload_t*)payload;
 
 				this->other_nonce = nonce_payload->get_nonce(nonce_payload);
+				break;
+			}
+			case PLV2_QKD:
+			{
+				DBG1(DBG_IKE,"Payload QKD recivido.");
 				break;
 			}
 			case PLV2_NOTIFY:

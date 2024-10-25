@@ -43,6 +43,7 @@ encoding/payloads/transform_substructure.c encoding/payloads/transform_substruct
 encoding/payloads/ts_payload.c encoding/payloads/ts_payload.h \
 encoding/payloads/unknown_payload.c encoding/payloads/unknown_payload.h \
 encoding/payloads/vendor_id_payload.c encoding/payloads/vendor_id_payload.h \
+encoding/payloads/qkd_payload.c encoding/payloads/qkd_payload.h \
 encoding/payloads/hash_payload.c encoding/payloads/hash_payload.h \
 encoding/payloads/fragment_payload.c encoding/payloads/fragment_payload.h \
 kernel/kernel_interface.c kernel/kernel_interface.h \

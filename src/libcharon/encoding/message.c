@@ -128,6 +128,7 @@ static payload_rule_t ike_sa_init_i_rules[] = {
 	{PLV2_SECURITY_ASSOCIATION,		1,	1,						FALSE,	FALSE},
 	{PLV2_KEY_EXCHANGE,				1,	1,						FALSE,	FALSE},
 	{PLV2_NONCE,					1,	1,						FALSE,	FALSE},
+	{PLV2_QKD,						1,	1,						FALSE,	FALSE},
 	{PLV2_VENDOR_ID,				0,	MAX_VID_PAYLOADS,		FALSE,	FALSE},
 };
 
@@ -142,6 +143,7 @@ static payload_order_t ike_sa_init_i_order[] = {
 	{PLV2_NONCE,					0},
 	{PLV2_NOTIFY,					NAT_DETECTION_SOURCE_IP},
 	{PLV2_NOTIFY,					NAT_DETECTION_DESTINATION_IP},
+	{PLV2_NOTIFY,					0},
 	{PLV2_NOTIFY,					0},
 	{PLV2_VENDOR_ID,				0},
 };
