@@ -572,7 +572,10 @@ static void process_payloads(private_ike_init_t *this, message_t *message)
 			}
 			case PLV2_QKD:
 			{
-				DBG1(DBG_IKE,"Payload QKD recivido.");
+				qkd_payload_t *qkd_payload = (qkd_payload_t*)payload;
+
+				this->qkd_key_id = qkd_payload->get_data(qkd_payload);
+				DBG1(DBG_IKE,"Payload QKD recivido - QKD Key ID: %s", this->qkd_key_id);
 				break;
 			}
 			case PLV2_NOTIFY:
