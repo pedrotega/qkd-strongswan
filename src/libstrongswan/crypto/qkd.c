@@ -1,0 +1,39 @@
+/*
+ * Copyright (C) 2010-2019 Tobias Brunner
+ * Copyright (C) 2005-2010 Martin Willi
+ * Copyright (C) 2005 Jan Hutter
+ *
+ * Copyright (C) secunet Security Networks AG
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.  See <http://www.fsf.org/copyleft/gpl.txt>.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
+ */
+
+#include "qkd.h"
+
+ENUM_BEGIN(qkd_method_names, QKD, QKD,
+	"QKD");
+ENUM_END(qkd_method_names, QKD);
+
+ENUM_BEGIN(qkd_method_names_short, QKD, QKD,
+	"qkd");
+ENUM_END(qkd_method_names_short, QKD);
+
+typedef struct private_qkd_t private_qkd_t;
+
+struct private_qkd_t {
+
+    qkd_t public;
+
+    chunk_t qkd_id;
+    chunk_t qkd_key;
+};
+
+

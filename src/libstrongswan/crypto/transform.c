@@ -18,15 +18,17 @@
 #include <crypto/hashers/hasher.h>
 #include <crypto/rngs/rng.h>
 #include <crypto/kdfs/kdf.h>
+#include <qkd.h>
 
-ENUM_BEGIN(transform_type_names, ENCRYPTION_ALGORITHM, EXTENDED_SEQUENCE_NUMBERS,
+ENUM_BEGIN(transform_type_names, ENCRYPTION_ALGORITHM, QUANTUM_KEY_DISTRIBUTION,
 	"ENCRYPTION_ALGORITHM",
 	"PSEUDO_RANDOM_FUNCTION",
 	"INTEGRITY_ALGORITHM",
 	"KEY_EXCHANGE_METHOD",
-	"EXTENDED_SEQUENCE_NUMBERS");
+	"EXTENDED_SEQUENCE_NUMBERS",
+	"QUANTUM_KEY_DISTRIBUTION");
 ENUM_NEXT(transform_type_names, HASH_ALGORITHM, KEY_DERIVATION_FUNCTION,
-		  EXTENDED_SEQUENCE_NUMBERS,
+		  QUANTUM_KEY_DISTRIBUTION,
 	"HASH_ALGORITHM",
 	"RANDOM_NUMBER_GENERATOR",
 	"AEAD_ALGORITHM",
@@ -61,6 +63,8 @@ enum_name_t* transform_get_enum_names(transform_type_t type)
 			return integrity_algorithm_names;
 		case KEY_EXCHANGE_METHOD:
 			return key_exchange_method_names;
+		case QUANTUM_KEY_DISTRIBUTION:
+			return qkd_method_names;
 		case EXTENDED_SEQUENCE_NUMBERS:
 			return extended_sequence_numbers_names;
 		case EXTENDED_OUTPUT_FUNCTION:

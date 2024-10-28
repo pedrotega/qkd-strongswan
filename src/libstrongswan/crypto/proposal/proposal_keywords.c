@@ -130,6 +130,7 @@ METHOD(proposal_keywords_t, get_token, const proposal_token_t*,
 	{
 		token = parse_token(this, str);
 	}
+	DBG1(DBG_IKE, "Me están llamando desde proposal_keywords %s", *token);
 	return token;
 }
 
