@@ -53,6 +53,7 @@
 #include <crypto/crypters/crypter.h>
 #include <crypto/signers/signer.h>
 #include <crypto/key_exchange.h>
+#include <crypto/qkd.h>
 
 #line 26 "./crypto/proposal/proposal_keywords_static.txt"
 struct proposal_token {
@@ -62,7 +63,7 @@ struct proposal_token {
 	uint16_t          keysize;
 };
 
-#define TOTAL_KEYWORDS 153
+#define TOTAL_KEYWORDS 154
 #define MIN_WORD_LENGTH 3
 #define MAX_WORD_LENGTH 22
 #define MIN_HASH_VALUE 11
@@ -450,7 +451,9 @@ static const struct proposal_token wordlist[] =
 #line 171 "./crypto/proposal/proposal_keywords_static.txt"
     {"ecp224bp",         KEY_EXCHANGE_METHOD, ECP_224_BP,                 0},
 #line 150 "./crypto/proposal/proposal_keywords_static.txt"
-    {"prfcamelliaxcbc",  PSEUDO_RANDOM_FUNCTION, PRF_CAMELLIA128_XCBC,    0}
+    {"prfcamelliaxcbc",  PSEUDO_RANDOM_FUNCTION, PRF_CAMELLIA128_XCBC,    0},
+#line 186 "./crypto/proposal/proposal_keywords_static.txt"
+    {"qkd",              QUANTUM_KEY_DISTRIBUTION, QKD,                   0}
   };
 
 static const short lookup[] =
@@ -487,9 +490,14 @@ static const short lookup[] =
 const struct proposal_token *
 proposal_get_token_static (register const char *str, register size_t len)
 {
+  if (strcmp(str,"qkd") == 0)
+  {
+    return &wordlist[153];
+  }
+
   if (len <= MAX_WORD_LENGTH && len >= MIN_WORD_LENGTH)
     {
-      register unsigned int key = hash (str, len);
+      register unsigned int key = hash (str, len);      
 
       if (key <= MAX_HASH_VALUE)
         {
