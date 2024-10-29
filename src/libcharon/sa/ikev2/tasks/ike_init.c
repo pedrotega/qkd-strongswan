@@ -102,6 +102,11 @@ struct private_ike_init_t {
 	chunk_t qkd_key_id;
 
 	/**
+	 * QKD is used
+	 */
+	bool using_qkd;
+
+	/**
 	 * nonce generator
 	 */
 	nonce_gen_t *nonceg;
@@ -344,9 +349,6 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 		enumerator = proposal_list->create_enumerator(proposal_list);
 		while (enumerator->enumerate(enumerator, (void**)&proposal))
 		{
-			if (proposal->get_algorithm(proposal, QUANTUM_KEY_DISTRIBUTION, NULL, NULL)){
-				DBG1(DBG_IKE, "\t**** Estoy en proposal list (QKD)");
-			}
 			/* include SPI of new IKE_SA when we are rekeying */
 			if (this->old_sa)
 			{
@@ -373,11 +375,11 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 		sa_payload = sa_payload_create_from_proposals_v2(proposal_list);
 		proposal_list->destroy_offset(proposal_list, offsetof(proposal_t, destroy));
 
-		char *id_qkd = "73a58f2e37d1410ca2ae191911bee564";
-		this->qkd_key_id = chunk_create(id_qkd, strlen(id_qkd));
-		qkd_payload = qkd_payload_create(PLV2_QKD);
-		qkd_payload->set_data(qkd_payload,this->qkd_key_id);
-		message->add_payload(message, (payload_t*)qkd_payload);
+		// char *id_qkd = "73a58f2e37d1410ca2ae191911bee564";
+		// this->qkd_key_id = chunk_create(id_qkd, strlen(id_qkd));
+		// qkd_payload = qkd_payload_create(PLV2_QKD);
+		// qkd_payload->set_data(qkd_payload,this->qkd_key_id);
+		// message->add_payload(message, (payload_t*)qkd_payload);
 	}
 	else
 	{
@@ -387,6 +389,15 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 			this->proposal->set_spi(this->proposal, id->get_responder_spi(id));
 		}
 		sa_payload = sa_payload_create_from_proposal_v2(this->proposal);
+
+		if (this->using_qkd)
+		{
+			char *id_qkd = "73a58f2e37d1410ca2ae191911bee564";
+			this->qkd_key_id = chunk_create(id_qkd, strlen(id_qkd));
+			qkd_payload = qkd_payload_create(PLV2_QKD);
+			qkd_payload->set_data(qkd_payload,this->qkd_key_id);
+			message->add_payload(message, (payload_t*)qkd_payload);
+		}
 	}
 	message->add_payload(message, (payload_t*)sa_payload);
 
@@ -538,6 +549,13 @@ static void process_sa_payload(private_ike_init_t *this, message_t *message,
 	}
 	proposal_list->destroy_offset(proposal_list,
 								  offsetof(proposal_t, destroy));
+
+	if (this->proposal->get_algorithm(this->proposal, 
+						QUANTUM_KEY_DISTRIBUTION, NULL,NULL))
+	{
+		DBG1(DBG_IKE, "\t*** Using QKD");
+		this->using_qkd = TRUE;
+	}
 }
 
 /**
