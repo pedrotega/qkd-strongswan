@@ -268,6 +268,7 @@ static void add_proposal_v2(private_sa_payload_t *this, proposal_t *proposal)
 
 	substruct = proposal_substructure_create_from_proposal_v2(proposal);
 	count = this->proposals->get_count(this->proposals);
+	DBG1(DBG_IKE, "\t*** COUNT: %d", count);
 	if (count > 0)
 	{
 		this->proposals->get_last(this->proposals, (void**)&last);
@@ -546,6 +547,10 @@ sa_payload_t *sa_payload_create_from_proposals_v2(linked_list_t *proposals)
 	enumerator = proposals->create_enumerator(proposals);
 	while (enumerator->enumerate(enumerator, &proposal))
 	{
+		if(proposal->get_algorithm(proposal, QUANTUM_KEY_DISTRIBUTION, NULL, NULL))
+		{
+			DBG1(DBG_IKE, "\t*** QKD proposal en sa_payload");
+		}
 		add_proposal_v2(this, proposal);
 	}
 	enumerator->destroy(enumerator);

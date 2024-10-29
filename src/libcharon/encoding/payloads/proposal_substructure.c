@@ -1507,6 +1507,16 @@ static void set_from_proposal_v2(private_proposal_substructure_t *this,
 		add_transform_substructure(this, transform);
 	}
 	enumerator->destroy(enumerator);
+
+	/* QKD */
+	enumerator = proposal->create_enumerator(proposal, QUANTUM_KEY_DISTRIBUTION);
+	while (enumerator->enumerate(enumerator, &alg, NULL))
+	{
+		transform = transform_substructure_create_type(PLV2_TRANSFORM_SUBSTRUCTURE,
+												QUANTUM_KEY_DISTRIBUTION, alg);
+		add_transform_substructure(this, transform);
+	}
+	enumerator->destroy(enumerator);
 }
 
 /**

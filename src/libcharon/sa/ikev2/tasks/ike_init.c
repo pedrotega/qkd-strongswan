@@ -344,6 +344,9 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 		enumerator = proposal_list->create_enumerator(proposal_list);
 		while (enumerator->enumerate(enumerator, (void**)&proposal))
 		{
+			if (proposal->get_algorithm(proposal, QUANTUM_KEY_DISTRIBUTION, NULL, NULL)){
+				DBG1(DBG_IKE, "\t**** Estoy en proposal list (QKD)");
+			}
 			/* include SPI of new IKE_SA when we are rekeying */
 			if (this->old_sa)
 			{
@@ -494,6 +497,7 @@ static void process_sa_payload(private_ike_init_t *this, message_t *message,
 	{
 		flags |= PROPOSAL_PREFER_SUPPLIED;
 	}
+
 	this->proposal = ike_cfg->select_proposal(ike_cfg, proposal_list, flags);
 	if (!this->proposal)
 	{
@@ -575,7 +579,7 @@ static void process_payloads(private_ike_init_t *this, message_t *message)
 				qkd_payload_t *qkd_payload = (qkd_payload_t*)payload;
 
 				this->qkd_key_id = qkd_payload->get_data(qkd_payload);
-				DBG1(DBG_IKE,"Payload QKD recivido - QKD Key ID: %s", this->qkd_key_id);
+				DBG1(DBG_IKE,"Payload QKD recibido - QKD Key ID: %s", this->qkd_key_id);
 				break;
 			}
 			case PLV2_NOTIFY:
@@ -876,6 +880,18 @@ METHOD(task_t, build_r, status_t,
 	identification_t *gateway;
 
 	/* check if we have everything we need */
+	if(this->proposal == NULL)
+	{
+		DBG1(DBG_IKE, "this->proposal == NULL");
+	}
+	if(this->other_nonce.len == 0)
+	{
+		DBG1(DBG_IKE, "this->other_nonce.len == 0");
+	}
+	if(this->my_nonce.len == 0)
+	{
+		DBG1(DBG_IKE, "this->my_nonce.len == 0");
+	}
 	if (this->proposal == NULL ||
 		this->other_nonce.len == 0 || this->my_nonce.len == 0)
 	{
