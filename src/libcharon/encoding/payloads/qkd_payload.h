@@ -43,14 +43,14 @@ struct qkd_payload_t {
 	/**
 	 * Set the data value.
 	 *
-	 * @param nonce			chunk containing the data, will be cloned
+	 * @param data			chunk containing the data of the QKD ID
 	 */
-	void (*set_data) (qkd_payload_t *this, chunk_t nonce);
+	void (*set_data) (qkd_payload_t *this, chunk_t data);
 
 	/**
 	 * Get data.
 	 *
-	 * @return		a chunk containing the cloned nonce
+	 * @return		a chunk containing the cloned QKD ID
 	 */
 	chunk_t (*get_data)(qkd_payload_t *this);
 
@@ -61,10 +61,10 @@ struct qkd_payload_t {
 };
 
 /**
- * Creates an empty Vendor ID payload for IKEv1 or IKEv2.
+ * Creates an empty QKD payload for IKEv1 or IKEv2.
  *
- * @@param type		PLV2_qkd or PLV1_qkd
- * @return			vendor ID payload
+ * @@param type		PLV2_QKD or PLV1_QKD
+ * @return			QKD ID payload
  */
 qkd_payload_t *qkd_payload_create(payload_type_t type);
 

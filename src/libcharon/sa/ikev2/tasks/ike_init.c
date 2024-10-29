@@ -25,6 +25,7 @@
 #include <bio/bio_writer.h>
 #include <sa/ikev2/keymat_v2.h>
 #include <crypto/key_exchange.h>
+#include <crypto/qkd.h>
 #include <crypto/hashers/hash_algorithm_set.h>
 #include <encoding/payloads/sa_payload.h>
 #include <encoding/payloads/ke_payload.h>
@@ -97,9 +98,14 @@ struct private_ike_init_t {
 	chunk_t other_nonce;
 
 	/**
+	 * Quantum Key Distribution
+	 */
+	qkd_t *qkd;
+
+	/**
 	 * QKD key id
 	 */
-	chunk_t qkd_key_id;
+	// chunk_t qkd_key_id;
 
 	/**
 	 * QKD is used
@@ -392,10 +398,13 @@ static bool build_payloads(private_ike_init_t *this, message_t *message)
 
 		if (this->using_qkd)
 		{
-			char *id_qkd = "73a58f2e37d1410ca2ae191911bee564";
-			this->qkd_key_id = chunk_create(id_qkd, strlen(id_qkd));
+			this->qkd = qkd_create();
+			DBG1(DBG_IKE,"\t*** [QKD] ID: %s", this->qkd->get_id(this->qkd));
+			DBG1(DBG_IKE,"\t*** [QKD] KEY: %s", this->qkd->get_key(this->qkd));
+			// char *id_qkd = "73a58f2e37d1410ca2ae191911bee564";
+			// this->qkd_key_id = chunk_create(id_qkd, strlen(id_qkd));
 			qkd_payload = qkd_payload_create(PLV2_QKD);
-			qkd_payload->set_data(qkd_payload,this->qkd_key_id);
+			qkd_payload->set_data(qkd_payload, this->qkd->get_id(this->qkd));
 			message->add_payload(message, (payload_t*)qkd_payload);
 		}
 	}
@@ -596,8 +605,11 @@ static void process_payloads(private_ike_init_t *this, message_t *message)
 			{
 				qkd_payload_t *qkd_payload = (qkd_payload_t*)payload;
 
-				this->qkd_key_id = qkd_payload->get_data(qkd_payload);
-				DBG1(DBG_IKE,"Payload QKD recibido - QKD Key ID: %s", this->qkd_key_id);
+				// this->qkd_key_id = qkd_payload->get_data(qkd_payload);
+				// DBG1(DBG_IKE,"Payload QKD recibido - QKD Key ID: %s", this->qkd_key_id);
+				this->qkd = qkd_create_from_id(qkd_payload->get_data(qkd_payload));
+				DBG1(DBG_IKE,"Payload QKD recibido - QKD Key ID: %s", this->qkd->get_id(this->qkd));
+				DBG1(DBG_IKE,"Payload QKD recibido - QKD Key: %s", this->qkd->get_key(this->qkd));
 				break;
 			}
 			case PLV2_NOTIFY:

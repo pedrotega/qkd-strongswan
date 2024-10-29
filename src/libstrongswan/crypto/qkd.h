@@ -25,6 +25,7 @@
 #define QKD_H_
 
 typedef enum qkd_method_t qkd_method_t;
+typedef struct qkd_t qkd_t;
 
 #include <library.h>
 
@@ -45,5 +46,52 @@ extern enum_name_t *qkd_method_names;
  * enum names for qkd_method_t (matching proposal keywords).
  */
 extern enum_name_t *qkd_method_names_short;
+
+struct qkd_t {
+	/**
+	 * Get id.
+	 *
+	 * @return		a chunk containing the ID of the QKD key.
+	 */
+	chunk_t (*get_id)(qkd_t *this);
+
+  /**
+	 * Get key.
+	 *
+	 * @return		a chunk containing the QKD key.
+	 */
+	chunk_t (*get_key)(qkd_t *this);
+
+  /**
+	 * Set the QKD ID value.
+	 *
+	 * @param id			chunk containing the data of the QKD ID
+	 */
+	void (*set_id) (qkd_t *this, chunk_t id);
+
+  /**
+	 * Set the QKD KEY value.
+	 *
+	 * @param key			chunk containing the data of the QKD Key
+	 */
+	void (*set_key) (qkd_t *this, chunk_t key);
+};
+
+/**
+ * Do a request a key to our KMS and return and object QKD.
+ * 
+ * @return			QKD object.
+ */
+qkd_t *qkd_create();
+
+/**
+ * Do a request a key to our KMS from an ID and return and object QKD.
+ * 
+ * @param id			chunk containing the data of the QKD ID
+ * 
+ * @return			QKD object.
+ */
+qkd_t *qkd_create_from_id(chunk_t id);
+
 
 #endif /** QKD_H_ @}*/
