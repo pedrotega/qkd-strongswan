@@ -72,7 +72,8 @@ void request_qkd_key_from_id(private_qkd_t *this, chunk_t id)
     char *id_q = "bc490419-7d60-487f-adc1-4ddcc177c139";
     char *key_q = "wHHVxRwDJs3/bXd38GHP3oe4svTuRpZS0yCC7x4Ly+s=";
 
-    if(chunk_compare(id, chunk_create(id_q, strlen(id_q)))) {
+    // if(chunk_compare(id, chunk_create(id_q, strlen(id_q)))) {
+    if(strcmp(id_q, id.ptr)==0) {
         DBG1(DBG_IKE,"\t*** Clave encontrada.");
         this->qkd_id = chunk_create(id_q, strlen(id_q));
         this->qkd_key = chunk_create(key_q, strlen(key_q));

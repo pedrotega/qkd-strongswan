@@ -608,8 +608,8 @@ static void process_payloads(private_ike_init_t *this, message_t *message)
 				// this->qkd_key_id = qkd_payload->get_data(qkd_payload);
 				// DBG1(DBG_IKE,"Payload QKD recibido - QKD Key ID: %s", this->qkd_key_id);
 				this->qkd = qkd_create_from_id(qkd_payload->get_data(qkd_payload));
-				DBG1(DBG_IKE,"Payload QKD recibido - QKD Key ID: %s", this->qkd->get_id(this->qkd));
-				DBG1(DBG_IKE,"Payload QKD recibido - QKD Key: %s", this->qkd->get_key(this->qkd));
+				DBG1(DBG_IKE,"\t*** Payload QKD recibido - QKD Key ID: %s", this->qkd->get_id(this->qkd));
+				DBG1(DBG_IKE,"\t*** Payload QKD recibido - QKD Key: %s", this->qkd->get_key(this->qkd));
 				break;
 			}
 			case PLV2_NOTIFY:
